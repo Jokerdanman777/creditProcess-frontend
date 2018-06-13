@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="login">
     <div class="header md-layout">
         <md-card class="md-layout-item md-size-35 md-small-size-100">
         <md-card-header>
@@ -61,5 +61,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+  .login {
+      margin-top: 60px;
   }
 </style>

@@ -1,7 +1,21 @@
 <template>
   <div>
+    <!-- toolbar -->
+    <md-toolbar class="md-dense">
+      <h3 class="md-title" style="flex: 1">АИС "Кредитный процесс"</h3>
 
-    <md-table v-model="tickets"  md-card >
+      <md-menu md-size="auto">
+        <md-button md-menu-trigger class="md-icon-button">
+          <md-icon>more_vert</md-icon>
+        </md-button>
+        <md-menu-content>
+              <router-link tag="md-menu-item" to="/create">Создать</router-link>
+              <md-menu-item @click="logout">Выйти</md-menu-item>
+        </md-menu-content>
+      </md-menu>
+    </md-toolbar>
+    <!-- table -->
+    <md-table class="padding" v-model="tickets" md-card>
       <md-table-toolbar>
         <h1 class="md-title">Заявки</h1>
       </md-table-toolbar>
@@ -53,7 +67,10 @@
           },
           response => console.log(response, 'error')
           )
-    }
+      },
+      logout : function () {
+        this.$router.push({ path: '/'})
+      }
     },
     mounted () {
       this.$http.get(`${process.env.API_URL}/ticket/all`)
@@ -61,11 +78,13 @@
           response => {this.tickets = response.data},
           response => console.log(response, 'error')
           )
-    }
+      }
   }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+  .padding {
+        padding-top: 3%;
+  }
 </style>
