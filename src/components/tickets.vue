@@ -27,9 +27,9 @@
             <md-table-cell md-label="Уровень" >{{ item.level.level }}</md-table-cell>
             <md-table-cell md-label="Ставка">{{ item.rate }}</md-table-cell>
             <md-table-cell md-label="Размер заема" >{{ item.amount }}</md-table-cell>
-            <md-table-cell md-label="Руководитель" >{{ item.managerpeople.people.lastName }} {{ item.managerpeople.people.firstName }} {{ item.managerpeople.people.middleName }}</md-table-cell>
-            <md-table-cell md-label="КИ" >{{ item.cipeople.people.lastName }} {{ item.cipeople.people.firstName }} {{ item.cipeople.people.middleName }}</md-table-cell>
-            <md-table-cell md-label="КМ" >{{ item.cmpeople.people.lastName }} {{ item.cmpeople.people.firstName }} {{ item.cmpeople.people.middleName }}</md-table-cell>
+            <md-table-cell md-label="Руководитель" >{{ item.manager_people.people.lastName }} {{ item.manager_people.people.firstName }} {{ item.manager_people.people.middleName }}</md-table-cell>
+            <md-table-cell md-label="КИ" >{{ item.ci_people.people.lastName }} {{ item.ci_people.people.firstName }} {{ item.ci_people.people.middleName }}</md-table-cell>
+            <md-table-cell md-label="КМ" >{{ item.cm_people.people.lastName }} {{ item.cm_people.people.firstName }} {{ item.cm_people.people.middleName }}</md-table-cell>
             <md-table-cell md-label="Управление">
  
                 <md-button class="md-icon-button" name="editButton" title="Редактировать" type="button" @click="editTicket(item.id)">
@@ -75,7 +75,7 @@
     mounted () {
       this.$http.get(`${process.env.API_URL}/ticket/all`)
         .then(
-          response => {this.tickets = response.data},
+          response => {this.tickets = response.data; console.log(this.tickets)},
           response => console.log(response, 'error')
           )
       }

@@ -27,6 +27,18 @@
                   <label>Заемщик</label>
                   <md-input type="text" v-model="ticket.borrower"></md-input>
                 </md-field>
+                <!-- Сегмент -->
+                  <md-field>
+                    <md-select  v-model="ticket.segementId" placeholder="Выберите сегмент">
+                      <md-option v-for="item in segements" :key="item.id" :value="item.id">{{ item.segement}}</md-option>
+                    </md-select>
+                  </md-field>
+                <!-- Уровень -->
+                  <md-field>
+                    <md-select  v-model="ticket.levelId" placeholder="Выберите уровень">
+                      <md-option v-for="item in levels" :key="item.id" :value="item.id">{{ item.level}}</md-option>
+                    </md-select>
+                  </md-field>
                 <md-field>
                   <label>Ставка</label>
                   <md-input type="text" v-model="ticket.rate"></md-input>
@@ -35,15 +47,11 @@
                   <label>Размер заема</label>
                   <md-input type="text" v-model="ticket.amount"></md-input>
                 </md-field>
-                 <md-autocomplete v-model="ticket.manager" :md-options="countries">
-                  <label>Кредитный менеджер</label>
-                </md-autocomplete>
-                <md-autocomplete v-model="ticket.cipeople" :md-options="countries">
-                  <label>Кредитный инспектор</label>
-                </md-autocomplete>
-                <md-autocomplete v-model="ticket.cmpeople" :md-options="countries">
-                  <label>Кредитный менеджер</label>
-                </md-autocomplete>
+                <!-- Кредитный менеджен -->
+
+                <!-- Кредитный инспектор -->
+
+                <!-- Этапы -->
           </md-card-content>
 
             <md-card-actions>
@@ -59,8 +67,9 @@
   export default {
     data: () => ({
       levels: [],
-      segement: [],
-      peoples: [],
+      segements: [],
+      cm: [],
+      ci: [],
       ticket: {
         levelId: '',
         segementId: '',
@@ -71,16 +80,6 @@
         cipeople: '',
         cmpeople: ''
       },
-            countries: [
-        'Algeria',
-        'Argentina',
-        'Brazil',
-        'Canada',
-        'Italy',
-        'Japan',
-        'United Kingdom',
-        'United States'
-      ],
     }),
     methods: {
       logout : function () {
@@ -89,7 +88,19 @@
       create : function () {
         this.$router.push({ path: '/tickets'})
       },
-    }
+    },
+    mounted () {
+      this.$http.get(`${process.env.API_URL}/ticket/segements`)
+        .then(
+          response => {this.segements = response.data},
+          response => console.log(response, 'error')
+          ),
+      this.$http.get(`${process.env.API_URL}/ticket/levels`)
+        .then(
+          response => {this.levels = response.data},
+          response => console.log(response, 'error')
+          )
+      }
   }
 </script>
 
