@@ -47,11 +47,22 @@
                   <label>Размер заема</label>
                   <md-input type="text" v-model="ticket.amount"></md-input>
                 </md-field>
-                <!-- Кредитный менеджен -->
-
+                <!-- Кредитный менеджер -->
+                <md-autocomplete v-model="selectCM" :md-options="cm_peoples" @md-selected="selectedCM" @md-opened="getCM">
+                  <label>Выберите кредитного менеджера</label>
+                  <template slot="md-autocomplete-item" slot-scope="{ item }">{{ item.people.lastName + " " + item.people.firstName + " " + item.people.middleName }}</template>
+                </md-autocomplete>
                 <!-- Кредитный инспектор -->
-
+                 <md-autocomplete v-model="selectCI" :md-options="ci_peoples" @md-selected="selectedCI" @md-opened="getCI">
+                  <label>Выберите кредитного инспектора</label>
+                  <template slot="md-autocomplete-item" slot-scope="{ item }">{{ item.people.lastName + " " + item.people.firstName + " " + item.people.middleName }}</template>
+                </md-autocomplete>
                 <!-- Этапы -->
+                  <md-field>
+                    <md-select  v-model="ticket.levelId" placeholder="Выберите уровень">
+                      <md-option v-for="item in levels" :key="item.id" :value="item.id">{{ item.level}}</md-option>
+                    </md-select>
+                  </md-field>
           </md-card-content>
 
             <md-card-actions>
@@ -68,8 +79,10 @@
     data: () => ({
       levels: [],
       segements: [],
-      cm: [],
-      ci: [],
+      cm_peoples: [],
+      ci_peoples: [],
+      selectCM : null,
+      selectCI : null,
       ticket: {
         levelId: '',
         segementId: '',
@@ -77,8 +90,8 @@
         rate: '',
         amount: '',
         manager: '',
-        cipeople: '',
-        cmpeople: ''
+        ci: '',
+        cm: ''
       },
     }),
     methods: {
@@ -88,6 +101,28 @@
       create : function () {
         this.$router.push({ path: '/tickets'})
       },
+      selectedCM : function (item) {
+        this.selectCM = item.people.lastName + " " + item.people.firstName + " " + item.people.middleName;
+        this.ticket.cm = item.id;
+      }, 
+      selectedCI : function (item) {
+        this.selectCI = item.people.lastName + " " + item.people.firstName + " " + item.people.middleName;
+        this.ticket.ci = item.id;
+      }, 
+      getCM : function () {
+        return  this.$http.get(`${process.env.API_URL}/people/cm`)
+        .then(
+          response => this.cm_peoples = response.data,
+          response => console.log(response, 'error')
+          ) 
+      },
+      getCI : function () {
+         this.$http.get(`${process.env.API_URL}/people/ci`)
+        .then(
+          response => this.ci_peoples = response.data,
+          response => console.log(response, 'error')
+          ) 
+      }
     },
     mounted () {
       this.$http.get(`${process.env.API_URL}/ticket/segements`)
@@ -100,6 +135,21 @@
           response => {this.levels = response.data},
           response => console.log(response, 'error')
           )
+      this.$http.get(`${process.env.API_URL}/people/cm`)
+        .then(
+          response => {this.cm_peoples = response.data},
+          response => console.log(response, 'error')
+          ),
+      this.$http.get(`${process.env.API_URL}/people/ci`)
+        .then(
+          response => {this.ci_peoples = response.data},
+          response => console.log(response, 'error')
+          ),
+      this.$http.get(`${process.env.API_URL}/ticket/step`)
+        .then(
+          response => {this.ci_peoples = response.data},
+          response => console.log(response, 'error')
+          )  
       }
   }
 </script>
@@ -112,6 +162,6 @@
     justify-content: center;
   }
   form {
-        padding-top: 5%;
+    padding-top: 5%;
   }
 </style>
