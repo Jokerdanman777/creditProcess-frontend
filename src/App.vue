@@ -20,6 +20,6 @@ export default {
 
 } 
 .md-menu-content {
-  max-width: 665px;
+  max-width: 680px;
   }
 </style>

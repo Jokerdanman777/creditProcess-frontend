@@ -53,6 +53,7 @@
     }),
     methods: {
       editTicket: function(itemId) {
+        this.$router.push({ path: `/ticket/${itemId}`})
         console.log(itemId, 'edit')
       },
       deleteTicket: function(itemId) {

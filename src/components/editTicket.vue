@@ -15,14 +15,15 @@
       </md-menu>
     </md-toolbar>
     <!-- create form -->
-    <form class="md-layout useFlex" @submit.prevent="create">
+    <form class="md-layout useFlex" @submit.prevent="save">
       <md-card class="md-layout-item md-size-45 md-small-size-100">
         
         <md-card-header>
-          <div class="md-title">Создание заявки</div>
+          <div class="md-title">Редактирование заявки</div>
         </md-card-header>
           
           <md-card-content>
+
                 <md-field>
                   <label>Заемщик</label>
                   <md-input type="text" v-model="ticket.borrower" required></md-input>
@@ -63,16 +64,29 @@
                   <template slot="md-autocomplete-item" slot-scope="{ item }">{{ item.people.lastName + " " + item.people.firstName + " " + item.people.middleName }}</template>
                 </md-autocomplete>
                 <!-- Этапы -->
-                <md-field>
-                <md-select v-model="ticket.selectSteps" placeholder="Выберите этапы" multiple>
-                  <md-option v-for="item in steps" :key="item.id" :value="item.id">{{ item.step}}</md-option>
-                </md-select>
-                </md-field>
-
+                <md-table>
+                    <md-table-toolbar>
+                        <h1 class="md-title">Этапы</h1>
+                    </md-table-toolbar>
+                    <md-table-row>
+                        <md-table-head>Этап</md-table-head>
+                        <md-table-head>Планируемая дата</md-table-head>
+                        <md-table-head>Фактическая дата</md-table-head>
+                    </md-table-row>
+                    <md-table-row v-for="item in ticket.steps" :key="item.id">
+                        <md-table-cell>{{ item.step_name.step }}</md-table-cell>
+                        <md-table-cell>
+                            <md-datepicker v-model="item.planDate" md-immediately :md-open-on-focus="false"/>
+                        </md-table-cell>
+                        <md-table-cell>
+                            <md-datepicker v-model="item.factDate" md-immediately :md-open-on-focus="false"/>
+                        </md-table-cell>
+                    </md-table-row>
+                </md-table>
           </md-card-content>
 
             <md-card-actions>
-              <md-button type="submit" class="md-primary">Создать</md-button>
+              <md-button type="submit" class="md-primary">Сохранить</md-button>
             </md-card-actions>
 
           </md-card>
@@ -85,32 +99,20 @@
     data: () => ({
       levels: [],
       segements: [],
-      steps : [],
       managers: [],
       cm_peoples: [],
       ci_peoples: [],
       selectCM : null,
       selectCI : null,
       selectManager : null,
-      ticket: {
-        active: 1,
-        segementId: '',
-        levelId: '',
-        borrower: '',
-        rate: '',
-        amount: '',
-        manager: '',
-        ci: '',
-        cm: '',
-        selectSteps: []
-      },
+      ticket: {},
     }),
     methods: {
       logout : function () {
         this.$router.push({ path: '/'})
       },
-      create : function () {
-      this.$http.post(`${process.env.API_URL}/ticket/new`, this.ticket)
+      save : function () {
+      this.$http.put(`${process.env.API_URL}/ticket/${this.$route.params.id}`)
         .then(
           response => this.$router.push({ path: '/tickets'}),
           response => console.log(response, 'error')
@@ -151,36 +153,41 @@
       }
     },
     mounted () {
-      this.$http.get(`${process.env.API_URL}/ticket/segements`)
+        this.$http.get(`${process.env.API_URL}/ticket/${this.$route.params.id}`)
+        .then(
+          response => {this.ticket = response.data; console.log(this.ticket.steps, 'ticket');},
+          response => console.log(response, 'error')
+          ),
+        this.$http.get(`${process.env.API_URL}/ticket/segements`)
         .then(
           response => {this.segements = response.data},
           response => console.log(response, 'error')
           ),
-      this.$http.get(`${process.env.API_URL}/ticket/levels`)
+        this.$http.get(`${process.env.API_URL}/ticket/levels`)
         .then(
           response => {this.levels = response.data},
           response => console.log(response, 'error')
           )
-      this.$http.get(`${process.env.API_URL}/people/cm`)
+        this.$http.get(`${process.env.API_URL}/people/cm`)
         .then(
           response => {this.cm_peoples = response.data},
           response => console.log(response, 'error')
           ),
-      this.$http.get(`${process.env.API_URL}/people/ci`)
+        this.$http.get(`${process.env.API_URL}/people/ci`)
         .then(
           response => {this.ci_peoples = response.data},
           response => console.log(response, 'error')
           ),
-      this.$http.get(`${process.env.API_URL}/ticket/steps`)
+        this.$http.get(`${process.env.API_URL}/ticket/steps`)
         .then(
           response => {this.steps = response.data},
           response => console.log(response, 'error')
           ),
-      this.$http.get(`${process.env.API_URL}/people/managers`)
+        this.$http.get(`${process.env.API_URL}/people/managers`)
         .then(
           response => this.managers = response.data,
           response => console.log(response, 'error')
-          )  
+          ) 
       }
   }
 </script>

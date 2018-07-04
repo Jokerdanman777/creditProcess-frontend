@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import Login from '@/components/login'
 import Tickets from '@/components/tickets'
 import CreateTicket from '@/components/createTicket'
-
+import EditTicket from '@/components/editTicket'
 Vue.use(Router)
 
 export default new Router({
@@ -26,6 +26,11 @@ export default new Router({
       path: '/create',
       name: 'create',
       component: CreateTicket
+    },
+    {
+      path: '/ticket/:id',
+      name: 'edit',
+      component: EditTicket
     }
   ]
 })
